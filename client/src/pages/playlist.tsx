@@ -2,12 +2,15 @@ import { useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { PlaylistWithSongs } from "@shared/schema";
 import { Button } from "@/components/ui/button";
-import { Play, Heart, MoreHorizontal, Download, Clock } from "lucide-react";
+import DragDropPlaylist from "@/components/drag-drop-playlist";
+import { Play, Heart, MoreHorizontal, Download, Clock, Radio } from "lucide-react";
 import { useAudioPlayer } from "@/hooks/use-audio-player";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Playlist() {
   const { id } = useParams();
   const { playTrack } = useAudioPlayer();
+  const { toast } = useToast();
 
   const { data: playlist, isLoading } = useQuery<PlaylistWithSongs>({
     queryKey: [`/api/playlists/${id}`],
@@ -109,7 +112,18 @@ export default function Playlist() {
           <Button variant="ghost" size="lg" className="text-spotify-text hover:text-white p-0">
             <Download className="w-6 h-6" />
           </Button>
-          <Button variant="ghost" size="lg" className="text-spotify-text hover:text-white p-0">
+          <Button 
+            variant="ghost" 
+            size="lg" 
+            className="text-secondary hover:text-primary p-0"
+            onClick={() => toast({
+              title: "Start Radio",
+              description: `Starting radio based on ${playlist.name}`,
+            })}
+          >
+            <Radio className="w-6 h-6" />
+          </Button>
+          <Button variant="ghost" size="lg" className="text-secondary hover:text-primary p-0">
             <MoreHorizontal className="w-6 h-6" />
           </Button>
         </div>
@@ -120,57 +134,19 @@ export default function Playlist() {
         {playlist.songs.length === 0 ? (
           <div className="text-center py-12">
             <h3 className="text-xl font-bold mb-2">This playlist is empty</h3>
-            <p className="text-spotify-text">Find something to add to this playlist.</p>
+            <p className="text-secondary">Find something to add to this playlist.</p>
           </div>
         ) : (
-          <div className="space-y-1">
-            {/* Header */}
-            <div className="grid grid-cols-12 gap-4 px-4 py-2 text-spotify-text text-sm border-b border-spotify-light-gray/20">
-              <div className="col-span-1">#</div>
-              <div className="col-span-6">TITLE</div>
-              <div className="col-span-3">ALBUM</div>
-              <div className="col-span-2 flex justify-end">
-                <Clock className="w-4 h-4" />
-              </div>
-            </div>
-
-            {/* Tracks */}
-            {playlist.songs.map((song, index) => (
-              <div
-                key={song.id}
-                className="grid grid-cols-12 gap-4 px-4 py-2 hover:bg-spotify-light-gray/10 rounded group cursor-pointer"
-                onClick={() => playTrack(song)}
-              >
-                <div className="col-span-1 flex items-center">
-                  <span className="text-spotify-text text-sm group-hover:hidden">
-                    {index + 1}
-                  </span>
-                  <Play className="w-4 h-4 text-white hidden group-hover:block" />
-                </div>
-                <div className="col-span-6 flex items-center space-x-3">
-                  <img
-                    src={song.album?.imageUrl || "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=40&h=40&fit=crop"}
-                    alt={song.title}
-                    className="w-10 h-10 rounded object-cover"
-                  />
-                  <div>
-                    <h4 className="font-medium text-white">{song.title}</h4>
-                    <p className="text-spotify-text text-sm">{song.artist.name}</p>
-                  </div>
-                </div>
-                <div className="col-span-3 flex items-center">
-                  <span className="text-spotify-text text-sm">
-                    {song.album?.title || "Unknown Album"}
-                  </span>
-                </div>
-                <div className="col-span-2 flex items-center justify-end">
-                  <span className="text-spotify-text text-sm">
-                    {Math.floor(song.duration! / 60)}:{(song.duration! % 60).toString().padStart(2, '0')}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+          <DragDropPlaylist 
+            playlistId={playlist.id}
+            songs={playlist.songs}
+            onReorder={(reorderedSongs) => {
+              toast({
+                title: "Playlist updated",
+                description: "Songs have been reordered",
+              });
+            }}
+          />
         )}
       </div>
     </div>

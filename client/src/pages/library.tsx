@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Playlist } from "@shared/schema";
+import PlaylistCreator from "@/components/playlist-creator";
 import { Plus, List, Grid3X3, Search } from "lucide-react";
 import { Link } from "wouter";
 
@@ -30,10 +31,7 @@ export default function Library() {
 
         {/* Quick Actions */}
         <div className="flex items-center space-x-4 mb-8">
-          <Button className="bg-spotify-green hover:bg-spotify-green/90 text-black font-semibold">
-            <Plus className="w-4 h-4 mr-2" />
-            Create Playlist
-          </Button>
+          <PlaylistCreator />
           <Button variant="outline" className="border-spotify-text text-spotify-text hover:text-white hover:border-white">
             Recently Added
           </Button>

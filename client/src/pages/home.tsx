@@ -3,6 +3,7 @@ import { SongWithDetails, Artist, Album } from "@shared/schema";
 import AlbumCard from "@/components/album-card";
 import ArtistCard from "@/components/artist-card";
 import QuickAccessCard from "@/components/quick-access-card";
+import ThemeSettings from "@/components/theme-settings";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChevronLeft, ChevronRight, Search, Download, User } from "lucide-react";
@@ -56,12 +57,13 @@ export default function Home() {
         </div>
 
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" className="bg-black bg-opacity-70 text-white px-4 py-2 rounded-full hover:bg-opacity-90">
+          <ThemeSettings />
+          <Button variant="ghost" className="bg-black bg-opacity-70 text-primary px-4 py-2 rounded-full hover:bg-opacity-90">
             <Download className="w-4 h-4 mr-2" />
             Install App
           </Button>
-          <div className="w-8 h-8 bg-spotify-green rounded-full flex items-center justify-center">
-            <User className="w-4 h-4 text-black" />
+          <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center">
+            <User className="w-4 h-4" />
           </div>
         </div>
       </header>

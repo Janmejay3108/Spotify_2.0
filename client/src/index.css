@@ -24,14 +24,18 @@
   --ring: hsl(20, 14.3%, 4.1%);
   --radius: 0.5rem;
 
-  /* Spotify Colors */
-  --spotify-green: hsl(141, 73%, 42%);
-  --spotify-dark: hsl(0, 0%, 7%);
-  --spotify-gray: hsl(0, 0%, 16%);
-  --spotify-light-gray: hsl(0, 0%, 24%);
-  --spotify-text: hsl(0, 0%, 70%);
-  --spotify-white: hsl(0, 0%, 100%);
-  --spotify-black: hsl(0, 0%, 0%);
+  /* Base Light Theme */
+  --spotify-bg: hsl(0, 0%, 98%);
+  --spotify-surface: hsl(0, 0%, 100%);
+  --spotify-surface-hover: hsl(0, 0%, 95%);
+  --spotify-border: hsl(0, 0%, 90%);
+  --spotify-text-primary: hsl(0, 0%, 10%);
+  --spotify-text-secondary: hsl(0, 0%, 40%);
+  
+  /* Accent Colors - Default Green */
+  --accent-primary: hsl(141, 73%, 42%);
+  --accent-hover: hsl(141, 73%, 38%);
+  --accent-foreground: hsl(0, 0%, 0%);
 }
 
 .dark {
@@ -54,6 +58,45 @@
   --destructive: hsl(0, 62.8%, 30.6%);
   --destructive-foreground: hsl(0, 0%, 98%);
   --ring: hsl(0, 0%, 83.9%);
+
+  /* Dark Theme */
+  --spotify-bg: hsl(0, 0%, 7%);
+  --spotify-surface: hsl(0, 0%, 16%);
+  --spotify-surface-hover: hsl(0, 0%, 24%);
+  --spotify-border: hsl(0, 0%, 24%);
+  --spotify-text-primary: hsl(0, 0%, 98%);
+  --spotify-text-secondary: hsl(0, 0%, 70%);
+}
+
+/* Accent Color Variations */
+[data-accent="green"] {
+  --accent-primary: hsl(141, 73%, 42%);
+  --accent-hover: hsl(141, 73%, 38%);
+  --accent-foreground: hsl(0, 0%, 0%);
+}
+
+[data-accent="blue"] {
+  --accent-primary: hsl(217, 91%, 60%);
+  --accent-hover: hsl(217, 91%, 56%);
+  --accent-foreground: hsl(0, 0%, 100%);
+}
+
+[data-accent="purple"] {
+  --accent-primary: hsl(262, 83%, 58%);
+  --accent-hover: hsl(262, 83%, 54%);
+  --accent-foreground: hsl(0, 0%, 100%);
+}
+
+[data-accent="pink"] {
+  --accent-primary: hsl(330, 81%, 60%);
+  --accent-hover: hsl(330, 81%, 56%);
+  --accent-foreground: hsl(0, 0%, 100%);
+}
+
+[data-accent="orange"] {
+  --accent-primary: hsl(24, 95%, 53%);
+  --accent-hover: hsl(24, 95%, 49%);
+  --accent-foreground: hsl(0, 0%, 100%);
 }
 
 @layer base {
@@ -62,33 +105,71 @@
   }
 
   body {
-    @apply font-sans antialiased bg-spotify-dark text-white overflow-hidden;
+    @apply font-sans antialiased overflow-hidden transition-colors duration-500;
+    background-color: var(--spotify-bg);
+    color: var(--spotify-text-primary);
   }
 }
 
 @layer utilities {
+  /* Theme-aware utilities */
+  .bg-surface {
+    background-color: var(--spotify-surface);
+  }
+  
+  .bg-surface-hover {
+    background-color: var(--spotify-surface-hover);
+  }
+  
+  .bg-accent {
+    background-color: var(--accent-primary);
+    color: var(--accent-foreground);
+  }
+  
+  .bg-accent:hover {
+    background-color: var(--accent-hover);
+  }
+  
+  .text-accent {
+    color: var(--accent-primary);
+  }
+  
+  .text-primary {
+    color: var(--spotify-text-primary);
+  }
+  
+  .text-secondary {
+    color: var(--spotify-text-secondary);
+  }
+  
+  .border-surface {
+    border-color: var(--spotify-border);
+  }
+
+  /* Legacy support */
   .spotify-green {
-    color: var(--spotify-green);
+    color: var(--accent-primary);
   }
   
   .bg-spotify-green {
-    background-color: var(--spotify-green);
+    background-color: var(--accent-primary);
+    color: var(--accent-foreground);
   }
   
   .bg-spotify-dark {
-    background-color: var(--spotify-dark);
+    background-color: var(--spotify-bg);
   }
   
   .bg-spotify-gray {
-    background-color: var(--spotify-gray);
+    background-color: var(--spotify-surface);
   }
   
   .bg-spotify-light-gray {
-    background-color: var(--spotify-light-gray);
+    background-color: var(--spotify-surface-hover);
   }
   
   .text-spotify-text {
-    color: var(--spotify-text);
+    color: var(--spotify-text-secondary);
   }
 
   .hover-lift {
@@ -117,5 +198,25 @@
 
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  /* Page transitions */
+  .page-transition {
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  }
+
+  .page-enter {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .page-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Smooth theme transitions */
+  * {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   }
 }

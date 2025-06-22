@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { useAudioPlayer } from "@/hooks/use-audio-player";
+import AudioVisualizer from "@/components/audio-visualizer";
+import MiniPlayer from "@/components/mini-player";
 import { 
   Play, 
   Pause, 
@@ -13,10 +16,12 @@ import {
   List,
   Monitor,
   Volume2,
-  Maximize2
+  Maximize2,
+  ChevronDown
 } from "lucide-react";
 
 export default function MusicPlayer() {
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const { 
     currentTrack, 
     isPlaying, 
@@ -34,6 +39,15 @@ export default function MusicPlayer() {
     return null;
   }
 
+  if (isCollapsed) {
+    return (
+      <MiniPlayer 
+        isCollapsed={isCollapsed}
+        onToggleCollapse={() => setIsCollapsed(false)}
+      />
+    );
+  }
+
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
@@ -43,7 +57,7 @@ export default function MusicPlayer() {
   const progress = duration ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-spotify-gray border-t border-spotify-light-gray p-4 z-50">
+    <div className="fixed bottom-0 left-0 right-0 bg-surface border-t border-surface p-4 z-50">
       <div className="flex items-center justify-between">
         {/* Current Track Info */}
         <div className="flex items-center space-x-3 w-1/4 min-w-0">
@@ -53,13 +67,14 @@ export default function MusicPlayer() {
             className="w-14 h-14 rounded object-cover"
           />
           <div className="flex-1 min-w-0">
-            <h4 className="text-white font-medium truncate">{currentTrack.title}</h4>
-            <p className="text-spotify-text text-sm truncate">{currentTrack.artist.name}</p>
+            <h4 className="text-primary font-medium truncate">{currentTrack.title}</h4>
+            <p className="text-secondary text-sm truncate">{currentTrack.artist.name}</p>
           </div>
-          <Button variant="ghost" size="sm" className="text-spotify-text hover:text-white p-1">
+          <AudioVisualizer width={60} height={20} className="mr-2" />
+          <Button variant="ghost" size="sm" className="text-secondary hover:text-primary p-1">
             <Heart className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="sm" className="text-spotify-text hover:text-white p-1">
+          <Button variant="ghost" size="sm" className="text-secondary hover:text-primary p-1">
             <ExternalLink className="w-4 h-4" />
           </Button>
         </div>
@@ -67,44 +82,44 @@ export default function MusicPlayer() {
         {/* Player Controls */}
         <div className="flex flex-col items-center w-1/2 max-w-md">
           <div className="flex items-center space-x-4 mb-2">
-            <Button variant="ghost" size="sm" className="text-spotify-text hover:text-white p-1">
+            <Button variant="ghost" size="sm" className="text-secondary hover:text-primary p-1">
               <Shuffle className="w-4 h-4" />
             </Button>
             <Button 
               variant="ghost" 
               size="sm" 
-              className="text-spotify-text hover:text-white p-1"
+              className="text-secondary hover:text-primary p-1"
               onClick={previousTrack}
             >
               <SkipBack className="w-4 h-4" />
             </Button>
             <Button
               size="sm"
-              className="w-8 h-8 bg-white rounded-full flex items-center justify-center hover:scale-105 transition-transform duration-300 p-0"
+              className="w-8 h-8 bg-accent rounded-full flex items-center justify-center hover:scale-105 transition-transform duration-300 p-0"
               onClick={togglePlayPause}
             >
               {isPlaying ? (
-                <Pause className="w-4 h-4 text-black" />
+                <Pause className="w-4 h-4" />
               ) : (
-                <Play className="w-4 h-4 text-black ml-0.5" />
+                <Play className="w-4 h-4 ml-0.5" />
               )}
             </Button>
             <Button 
               variant="ghost" 
               size="sm" 
-              className="text-spotify-text hover:text-white p-1"
+              className="text-secondary hover:text-primary p-1"
               onClick={nextTrack}
             >
               <SkipForward className="w-4 h-4" />
             </Button>
-            <Button variant="ghost" size="sm" className="text-spotify-text hover:text-white p-1">
+            <Button variant="ghost" size="sm" className="text-secondary hover:text-primary p-1">
               <Repeat className="w-4 h-4" />
             </Button>
           </div>
           
           {/* Progress Bar */}
           <div className="flex items-center space-x-2 w-full">
-            <span className="text-xs text-spotify-text min-w-[40px]">
+            <span className="text-xs text-secondary min-w-[40px]">
               {formatTime(currentTime)}
             </span>
             <Slider
@@ -114,7 +129,7 @@ export default function MusicPlayer() {
               step={0.1}
               className="flex-1"
             />
-            <span className="text-xs text-spotify-text min-w-[40px]">
+            <span className="text-xs text-secondary min-w-[40px]">
               {formatTime(duration)}
             </span>
           </div>
@@ -122,14 +137,14 @@ export default function MusicPlayer() {
 
         {/* Volume and Other Controls */}
         <div className="flex items-center space-x-4 w-1/4 justify-end">
-          <Button variant="ghost" size="sm" className="text-spotify-text hover:text-white p-1">
+          <Button variant="ghost" size="sm" className="text-secondary hover:text-primary p-1">
             <List className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="sm" className="text-spotify-text hover:text-white p-1">
+          <Button variant="ghost" size="sm" className="text-secondary hover:text-primary p-1">
             <Monitor className="w-4 h-4" />
           </Button>
           <div className="flex items-center space-x-2">
-            <Button variant="ghost" size="sm" className="text-spotify-text hover:text-white p-1">
+            <Button variant="ghost" size="sm" className="text-secondary hover:text-primary p-1">
               <Volume2 className="w-4 h-4" />
             </Button>
             <Slider
@@ -139,8 +154,13 @@ export default function MusicPlayer() {
               className="w-20"
             />
           </div>
-          <Button variant="ghost" size="sm" className="text-spotify-text hover:text-white p-1">
-            <Maximize2 className="w-4 h-4" />
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="text-secondary hover:text-primary p-1"
+            onClick={() => setIsCollapsed(true)}
+          >
+            <ChevronDown className="w-4 h-4" />
           </Button>
         </div>
       </div>
